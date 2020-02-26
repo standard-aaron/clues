@@ -28,7 +28,7 @@ def parse_args():
 	parser.add_argument('--thresh',type=float,default=1e-4)	
 	parser.add_argument('-thin','--thin',type=int,default=1)
 	parser.add_argument('-burnin','--burnin',type=int,default=0)
-	parser.add_argument('--tCutoff',type=float,default=5000)
+	parser.add_argument('--tCutoff',type=float,default=1000)
 	parser.add_argument('--timeBins',type=str,default=None)
 
 	return parser.parse_args()
@@ -99,7 +99,12 @@ def load_data(args):
 	else:
 		ancientGLs = np.zeros((0,4))
 
-	epochs = np.arange(0.0,args.tCutoff)
+	if noCoals:
+		tCutoff = np.max(ancientGLs[:,0])+1.0
+	else:
+		tCutoff = args.tCutoff
+
+	epochs = np.arange(0.0,tCutoff)
 	# loading population size trajectory
 	if args.coal != None:
 		Nepochs = np.genfromtxt(args.coal,skip_header=1,skip_footer=1)
@@ -107,7 +112,7 @@ def load_data(args):
 		N = np.array(list(N)+[N[-1]])
 		Ne = N[np.digitize(epochs)-1]
 	else:
-		Ne = args.N * np.ones(int(args.tCutoff))
+		Ne = args.N * np.ones(int(tCutoff))
 
 	# load z tables
 	z_bins,z_logcdf,z_logsf = load_normal_tables()
