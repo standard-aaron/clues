@@ -16,6 +16,6 @@ This will save three files: (1) `example.epochs.npy`, (2) `example.freqs.npy`, (
 
 ## Options
 
-The `--ancientSamps` argument is actually not required. At least one of `--ancientSamps` and `--times` must be specified. The option `--times` specifies coalescence times in the derived and ancestral classes (e.g. estimated using Relate [Speidel et al 2019]). As an example, you can specify `--times example/example`, which points the program to `example/example.{der,anc}.npy`.
+*Note: don't worry about this for now. This is more relevant for if/when we want to incorporate modern data.* The `--ancientSamps` argument is actually not required. At least one of `--ancientSamps` and `--times` must be specified. The option `--times` specifies coalescence times in the derived and ancestral classes (e.g. estimated using Relate [Speidel et al 2019]). As an example, you can specify `--times example/example`, which points the program to `example/example.{der,anc}.npy`.
 
 There is also an option to modify constant population size (`-N`) or population size changes (`--coal`). See the example folder for an example .coal file. The .coal file is the same format as outputted by Relate: https://myersgroup.github.io/relate/modules.html#PopulationSizeScript_FileFormats
