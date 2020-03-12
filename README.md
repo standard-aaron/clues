@@ -61,6 +61,6 @@ This will save three files: (1) `out.epochs.npy`, (2) `out.freqs.npy`, (3) `out.
 
 See the wiki page https://github.com/35ajstern/clues/wiki/Plotting-trajectories to plot trajectories in python. which produces plots like `example.png`. 
 
-## `clues-v0`
+## Previous implementation (`clues-v0`)
 
 To find the previous version of `clues`, which uses ARGweaver output (Rasmussen et al, 2014; Hubisz, et al, 2019; http://compgen.cshl.edu/ARGweaver/doc/argweaver-d-manual.html), please go to https://github.com/35ajstern/clues-v0. Note that we are no longer maintaining this version.
