@@ -15,12 +15,19 @@ where
 Please visit the wiki pages found here (https://github.com/35ajstern/clues/wiki/Sampling-&-extracting-coalescence-times) to find tutorials of how to:
 
   1. Run `Relate`
+      
       (https://github.com/35ajstern/clues/wiki/Sampling-&-extracting-coalescence-times#1-running-relate-and-samplebranchlengthssh)
+      
   2. Prepare `clues` input files
+  
       (https://github.com/35ajstern/clues/wiki/Sampling-&-extracting-coalescence-times#2-extracting-coalescence-times-using-extract_coalspy)
+      
   3. Run `clues` & command-line options
+  
       (https://github.com/35ajstern/clues/wiki/Command-line-options-for-CLUES)
+      
   3. Plot the output of `clues` (ie, plot frequency trajectories)
+  
       (https://github.com/35ajstern/clues/wiki/CLUES-output-&-Plotting-trajectories)
 
 #### Previous implementation (`clues-v0`)
