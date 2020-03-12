@@ -166,7 +166,7 @@ def likelihood_wrapper(theta,timeBins,N,freqs,z_bins,z_logcdf,z_logsf,ancGLs,gen
 
 def out(args,epochs,freqs,post):
 	np.save(args.out+'.epochs',epochs)
-	np.save(args.out+'.freqs',epochs)
+	np.save(args.out+'.freqs',freqs)
 	np.save(args.out+'.post',post)
 	return
 
