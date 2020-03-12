@@ -55,7 +55,7 @@ Usage: `python inference.py --times example/example --ancientSamps example/examp
 
 **Note**: you can use ancient samples AND/OR coal times! I.e. it is valid to run the HMM on only aDNA samples, if you want.
 
-## Output
+## Output & plotting trajectories
 
 This will save three files: (1) `out.epochs.npy`, (2) `out.freqs.npy`, (3) `out.post.npy`. These files are discrete sets of (1) timepoints and (2) allele frequencies, as well as (3) the posterior distribution on allele frequency as a function of time. The posterior is saved in log space. All of these files can be loaded in python using `np.load()`. To get the max-marginal estimate of the allele frequency trajectory, simply load the posterior and take the maximum at each slice along the time axis (columns). To get the posterior mean, simply take the mean of `freqs` with respect to these slices. 
 
