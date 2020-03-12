@@ -22,7 +22,7 @@ Please visit the wiki pages found here (https://github.com/35ajstern/clues/wiki/
   
       (https://github.com/35ajstern/clues/wiki/Sampling-&-extracting-coalescence-times#2-extracting-coalescence-times-using-extract_coalspy)
       
-  3. Run `clues` & command-line options
+  3. Run `clues` & command-line options (incl. incorporating aDNA samples)
   
       (https://github.com/35ajstern/clues/wiki/Command-line-options-for-CLUES)
       
