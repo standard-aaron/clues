@@ -12,9 +12,9 @@ where
 
 Please visit the wiki pages found here (https://github.com/35ajstern/clues/wiki/Sampling-&-extracting-coalescence-times) to find tutorials of how to:
 
-  1. run `Relate`: https://github.com/35ajstern/clues/wiki/CLUES-output-&-Plotting-trajectories
-  2. prepare its output to run `clues`: https://github.com/35ajstern/clues/wiki/Command-line-options-for-CLUES
-  3. plot the output of `clues` (ie, plot frequency trajectories): https://github.com/35ajstern/clues/wiki/CLUES-output-&-Plotting-trajectories
+  1. Run `Relate`: https://github.com/35ajstern/clues/wiki/CLUES-output-&-Plotting-trajectories
+  2. Prepare `clues` input files: https://github.com/35ajstern/clues/wiki/Command-line-options-for-CLUES
+  3. Plot the output of `clues` (ie, plot frequency trajectories): https://github.com/35ajstern/clues/wiki/CLUES-output-&-Plotting-trajectories
 
 #### Previous implementation (`clues-v0`)
 
