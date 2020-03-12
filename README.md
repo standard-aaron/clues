@@ -10,6 +10,8 @@ where
 
 `example/example.{der,anc}.npy` are NumPy binary files containing derived/ancestral coalescence times. These are estimated using Relate [Speidel et al 2019]) and processed using the `extract_coals.py` script. 
 
+## Tutorials/Wikis
+
 Please visit the wiki pages found here (https://github.com/35ajstern/clues/wiki/Sampling-&-extracting-coalescence-times) to find tutorials of how to:
 
   1. Run `Relate`: https://github.com/35ajstern/clues/wiki/CLUES-output-&-Plotting-trajectories
