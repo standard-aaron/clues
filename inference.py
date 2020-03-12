@@ -36,9 +36,9 @@ def parse_args():
 
 def load_normal_tables():
     # read in global Phi(z) lookups
-    z_bins = np.genfromtxt('z_bins.txt')
-    z_logcdf = np.genfromtxt('z_logcdf.txt')
-    z_logsf = np.genfromtxt('z_logsf.txt')
+    z_bins = np.genfromtxt('utils/z_bins.txt')
+    z_logcdf = np.genfromtxt('utils/z_logcdf.txt')
+    z_logsf = np.genfromtxt('utils/z_logsf.txt')
     return z_bins,z_logcdf,z_logsf
 
 def load_times(args):
@@ -110,7 +110,7 @@ def load_data(args):
 		Nepochs = np.genfromtxt(args.coal,skip_header=1,skip_footer=1)
 		N = 0.5/np.genfromtxt(args.coal,skip_header=2)[2:-1]
 		N = np.array(list(N)+[N[-1]])
-		Ne = N[np.digitize(epochs)-1]
+		Ne = N[np.digitize(epochs,Nepochs)-1]
 	else:
 		Ne = args.N * np.ones(int(tCutoff))
 
@@ -125,8 +125,10 @@ def load_data(args):
 	freqs = stats.beta.ppf(np.linspace(c,1-c,df),a,b)
 
 	# load time bins (for defining selection epochs)
-	timeBins = np.genfromtxt(args.timeBins)
-
+	if args.timeBins != None:
+		timeBins = np.genfromtxt(args.timeBins)
+	else:
+		timeBins = np.array([0.0,tCutoff])
 	return timeBins,times,epochs,Ne,freqs,z_bins,z_logcdf,z_logsf,ancientGLs,noCoals,currFreq
 
 def likelihood_wrapper(theta,timeBins,N,freqs,z_bins,z_logcdf,z_logsf,ancGLs,gens,noCoals,currFreq):
@@ -261,11 +263,11 @@ if __name__ == "__main__":
 
 	print('#'*10)
 	print()
-	print('logLR: %.2f'%(-res.fun+logL0))
+	print('logLR: %.4f'%(-res.fun+logL0))
 	print()
 	print('epoch\tselection')
 	for s,t,u in zip(S,timeBins[:-1],timeBins[1:]):
-		print('%d-%d\t%.3f'%(t,u,s))
+		print('%d-%d\t%.5f'%(t,u,s))
 	
 
 	# infer trajectory @ MLE of selection parameter
@@ -274,7 +276,8 @@ if __name__ == "__main__":
 	if args.out != None:
 		out(args,epochs,freqs,post)
 	else:
-		traj = freqs[np.argmax(post,axis=0)][:100]
+		print('Trajectory for 100 gens before present:')
+		traj = np.array([np.sum(freqs * np.exp(post[:,i])) for i in range(100)])
 		print()
 		print(traj)
 
