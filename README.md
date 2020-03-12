@@ -37,7 +37,7 @@ This option specifies the time to 'cut off' the coalescence process. (Default 10
 
 Usage: `python inference.py --times example/example --tCutoff 2000`
 
-### Importance sampling
+### Importance sampling options
 
 Usage: `python inference.py --times example/example --burnin <LEN_BURNIN>` and `--thin <LEN_THIN>` 
 
