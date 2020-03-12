@@ -3,7 +3,7 @@
 ## Basic usage
 
 `
-python inference.py --times example/example --out example
+python inference.py --times example/example --out example/out
 `
 
 where 
