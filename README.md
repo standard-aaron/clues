@@ -14,6 +14,9 @@ where
 
 ### Population size changes
 
+Usage: `python inference.py --times example/example -N 3500`, 
+or `python inference.py --times example/example --coal example/example.coal`
+
 While `clues` assumes a panmictic population, there is an option to modify constant population size (`-N`) or population size changes (`--coal`). See the example folder for an example .coal file. The .coal file is the same format as outputted by `Relate`: https://myersgroup.github.io/relate/modules.html#PopulationSizeScript_FileFormats. **Note**: while the `-N` option assumes diploid Ne, the `--coal` option assumes haploid Ne (as in `Relate`). 
 
 ### Timing of selection
@@ -22,7 +25,7 @@ While `clues` assumes a panmictic population, there is an option to modify const
 
 This option can allow you to specify (a) specific time(s) to test for selection:
 
-Usage: `--timeBins example/timeBins.txt`
+Usage: `python inference.py --times example/example --timeBins example/timeBins.txt`
 
 `timeBins.txt` is a file that denotes epochs (e.g. 0-50 gens before present) during which selection is allowed to differ from 0 during optimization. Note that you can set arbitrarily many time bins (e.g., 0,50,100,150...), but the estimator error will increase drastically, and optimization duration will also increase.
 
@@ -30,15 +33,15 @@ Usage: `--timeBins example/timeBins.txt`
 
 This option specifies the time to 'cut off' the coalescence process. (Default 1000 gens before present). Note this must exceed the oldest edge of the time bins.
 
-Usage: `--tCutoff 1000`
+Usage: `python inference.py --times example/example --tCutoff 2000`
 
 ### Importance sampling
 
-The options `--burnin <LEN_BURNIN>` and `--thin <LEN_THIN>` are used to modulate which MCMC samples (from `Relate/SampleBranchLengths.sh`) to include in the importance sampling estimate.
+The options `python inference.py --times example/example --burnin <LEN_BURNIN>` and `--thin <LEN_THIN>` are used to modulate which MCMC samples (from `Relate/SampleBranchLengths.sh`) to include in the importance sampling estimate.
 
 ### Ancient samples
 
-Usage: `--ancientSamps example/exampleAncientSamps.txt`
+Usage: `python inference.py --times example/example --ancientSamps example/exampleAncientSamps.txt`
 
 `exampleAncientSamps.txt` is a file listed ancient genotype likelihoods (set likelihoods to 0/-inf if hard-called)
 
