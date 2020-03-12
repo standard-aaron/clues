@@ -16,7 +16,7 @@ Please visit the wiki pages found here (https://github.com/35ajstern/clues/wiki/
 
 ### Population size changes
 
-Usage: `python inference.py --times example/example -N 3500`, 
+Usage: `python inference.py --times example/example -N <DIPLOID_POPSIZE>`, 
 or `python inference.py --times example/example --coal example/example.coal`
 
 While `clues` assumes a panmictic population, there is an option to modify constant population size (`-N`) or population size changes (`--coal`). See the example folder for an example .coal file. The .coal file is the same format as outputted by `Relate`: https://myersgroup.github.io/relate/modules.html#PopulationSizeScript_FileFormats. **Note**: while the `-N` option assumes diploid Ne, the `--coal` option assumes haploid Ne (as in `Relate`). 
