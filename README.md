@@ -8,9 +8,7 @@ python inference.py --times example/example --out example
 
 where 
 
-`example/example.{der,anc}.npy` are NumPy binary files containing derived/ancestral coalescence times. These are estimated using Relate [Speidel et al 2019]).
-
-Please visit the wiki pages found here (https://github.com/35ajstern/clues/wiki/Sampling-&-extracting-coalescence-times) to find tutorials of how to run `Relate` and prepare its output to run `clues`. 
+`example/example.{der,anc}.npy` are NumPy binary files containing derived/ancestral coalescence times. These are estimated using Relate [Speidel et al 2019]) and processed using the `extract_coals.py` script. Please visit the wiki pages found here (https://github.com/35ajstern/clues/wiki/Sampling-&-extracting-coalescence-times) to find tutorials of how to run `Relate` and prepare its output to run `clues`. 
 
 ## Options
 
