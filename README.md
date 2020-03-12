@@ -37,16 +37,15 @@ Usage: `python inference.py --times example/example --tCutoff 2000`
 
 ### Importance sampling
 
-The options `python inference.py --times example/example --burnin <LEN_BURNIN>` and `--thin <LEN_THIN>` are used to modulate which MCMC samples (from `Relate/SampleBranchLengths.sh`) to include in the importance sampling estimate.
+Usage: `python inference.py --times example/example --burnin <LEN_BURNIN>` and `--thin <LEN_THIN>` 
+
+Burnin and thinning are used to modulate which MCMC samples (from `Relate/SampleBranchLengths.sh`) to include in the importance sampling estimate.
 
 ### Ancient samples
 
 Usage: `python inference.py --times example/example --ancientSamps example/exampleAncientSamps.txt`
 
 `exampleAncientSamps.txt` is a file listed ancient genotype likelihoods (set likelihoods to 0/-inf if hard-called)
-
-
-`timeBins.txt` is a file that denotes epochs (e.g. 0-50 gens before present) during which selection is allowed to differ from 0 during optimization. Note that you can set arbitrarily many time bins (e.g., 0,50,100,150...), but the estimator error will increase drastically, and optimization duration will also increase.
 
 **Note**: you can use ancient samples AND/OR coal times! I.e. it is valid to run the HMM on only aDNA samples, if you want.
 
