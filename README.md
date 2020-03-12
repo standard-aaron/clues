@@ -29,7 +29,7 @@ This option can allow you to specify (a) specific time(s) to test for selection:
 
 Usage: `python inference.py --times example/example --timeBins example/timeBins.txt`
 
-`timeBins.txt` is a file that denotes epochs (e.g. 0-50 gens before present) during which selection is allowed to differ from 0 during optimization. Note that you can set arbitrarily many time bins (e.g., 0,50,100,150...), but the estimator error will increase drastically, and optimization duration will also increase.
+`timeBins.txt` is a file that denotes epochs (e.g. 0-50 gens before present) during which selection is allowed to differ from 0 during optimization. Note that you can set arbitrarily many time bins (e.g., 0,50,100,150...), but the estimator error will increase drastically, and optimization duration will also increase. E.g. `example/timeBins3.txt` will tell the program to test for selection jointly in 3 different epochs: 0-50, 50-100, and 100-150 gens bp. 
 
 #### Cutoff time
 
