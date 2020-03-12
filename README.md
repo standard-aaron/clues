@@ -18,4 +18,4 @@ Please visit the wiki pages found here (https://github.com/35ajstern/clues/wiki/
 
 #### Previous implementation (`clues-v0`)
 
-To find the previous version of `clues`, which uses ARGweaver output (Rasmussen et al, 2014; Hubisz, et al, 2019; http://compgen.cshl.edu/ARGweaver/doc/argweaver-d-manual.html), please go to https://github.com/35ajstern/clues-v0. We are no longer maintaining this version.
+To find the previous version of `clues`, which uses ARGweaver output (Rasmussen et al, 2014; Hubisz, et al, 2019; http://compgen.cshl.edu/ARGweaver/doc/argweaver-d-manual.html), please go to https://github.com/35ajstern/clues-v0. We are no longer maintaining `clues-v0`
