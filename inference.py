@@ -264,6 +264,8 @@ if __name__ == "__main__":
 	print()
 	print('logLR: %.4f'%(-res.fun+logL0))
 	print()
+	print('MLE:')
+	print('========')
 	print('epoch\tselection')
 	for s,t,u in zip(S,timeBins[:-1],timeBins[1:]):
 		print('%d-%d\t%.5f'%(t,u,s))
@@ -275,10 +277,14 @@ if __name__ == "__main__":
 	if args.out != None:
 		out(args,epochs,freqs,post)
 	else:
-		print('Trajectory for 100 gens before present:')
-		traj = np.array([np.sum(freqs * np.exp(post[:,i])) for i in range(100)])
 		print()
-		print(traj)
-
+		print('Trajectory for 100 gens before present:')
+		print('=============')
+		print('gen\tfreq')
+		for i in range(0,int(timeBins[-1]),int(timeBins[-1]//20)):
+			print(i,np.sum(freqs * np.exp(post[:,i])))
+		print()
+		print('Finished.')
+		print()
 
 

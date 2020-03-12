@@ -97,7 +97,7 @@ def _log_trans_prob(i,N,s,FREQS,z_bins,z_logcdf,z_logsf,dt,h):
 	else:
 
 		if s != 0:
-			mu = p - s*p*(1.0-p)*(p+h*(0.5-p))*dt
+			mu = p - 2*s*p*(1.0-p)*(p+h*(1-2*p))*dt
 
 		else:
 			mu = p 
@@ -191,7 +191,12 @@ def forward_algorithm(sel,times,epochs,N,freqs,z_bins,z_logcdf,z_logsf,ancientGL
     
     lf = len(freqs)
     
-    alpha = np.zeros(lf)
+    # neutral sfs
+    alpha = -np.log(freqs) 
+    
+    # uniform prior
+    alpha = np.zeros(len(freqs))
+	
     alpha -= _logsumexp(alpha)
     
     T = len(epochs)-1
