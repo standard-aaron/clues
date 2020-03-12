@@ -41,6 +41,10 @@ This option specifies the time to 'cut off' the coalescence process. (Default 10
 
 Usage: `python inference.py --times example/example --tCutoff 2000`
 
+### Dominance
+
+Currently, you can hard set the dominance coefficient of the allele using the `--dom` option. The default is 0.5 (additive). 
+
 ### Importance sampling options
 
 Usage: `python inference.py --times example/example --burnin <LEN_BURNIN>` and `--thin <LEN_THIN>` 
