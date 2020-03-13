@@ -8,10 +8,11 @@ python inference.py --times example/example --out example/out
 
 where 
 
-`example/example.{der,anc}.npy` are NumPy binary files containing derived/ancestral coalescence times. These are estimated using Relate [Speidel et al 2019]) and processed using the `extract_coals.py` script. 
+`example/example.{der,anc}.npy` are NumPy binary files containing derived/ancestral coalescence times. These are estimated using [Relate](https://myersgroup.github.io/relate/) [Speidel, *et al.* Nat. Gen. 2019]) and processed using the `extract_coals.py` script. 
 
 If you use this program, please cite:
-  Stern, *et al.* Plos Genetics (2019) doi: 10.1371/journal.pgen.1008384
+  
+  [Stern, *et al.* Plos Gen. (2019)](https://journals.plos.org/plosgenetics/article/metrics?id=10.1371/journal.pgen.1008384) (doi: 10.1371/journal.pgen.1008384)
 
 ## Tutorials/Wikis
 
