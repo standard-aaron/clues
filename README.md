@@ -10,6 +10,9 @@ where
 
 `example/example.{der,anc}.npy` are NumPy binary files containing derived/ancestral coalescence times. These are estimated using Relate [Speidel et al 2019]) and processed using the `extract_coals.py` script. 
 
+If you use this program, please cite:
+  Stern, *et al.* Plos Genetics (2019) doi: 10.1371/journal.pgen.1008384
+
 ## Tutorials/Wikis
 
 Please visit the wiki pages found here (https://github.com/35ajstern/clues/wiki/Sampling-&-extracting-coalescence-times) to find tutorials of how to:
