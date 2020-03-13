@@ -29,6 +29,12 @@ Please visit the wiki pages found here (https://github.com/35ajstern/clues/wiki/
   3. Plot the output of `clues` (ie, plot frequency trajectories)
   
       (https://github.com/35ajstern/clues/wiki/CLUES-output-&-Plotting-trajectories)
+      
+#### Installation/dependencies
+
+`clues` has developed for python 3; use python 2 at your own risk (visit the Issues section for tips on using python 2).
+
+The programs require the following dependencies, which can be installed using conda/pip: `numba`, `progressbar`, `biopython`
 
 #### Previous implementation (`clues-v0`)
 
