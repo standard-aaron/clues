@@ -29,7 +29,7 @@ def parse_args():
 	parser.add_argument('-burnin','--burnin',type=int,default=0)
 	parser.add_argument('--tCutoff',type=float,default=1000)
 	parser.add_argument('--timeBins',type=str,default=None)
-
+	parser.add_argument('--sMax',type=float,default=0.1)
 	return parser.parse_args()
 
 
@@ -70,8 +70,13 @@ def load_times(args):
 	row0 = -1.0 * np.ones((ntot,M))
 	row0[:locusDerTimes.shape[0],:] = locusDerTimes
 
+	for row in row0:
+		print(row)
+	
 	row1 = -1.0 * np.ones((ntot,M))
 	row1[:locusAncTimes.shape[0],:] = locusAncTimes
+	for row in row1:
+		print(row)
 	locusTimes = np.array([row0,row1])
 	return locusTimes, n, m
 
@@ -94,7 +99,7 @@ def load_data(args):
 
 	# load ancient samples/genotype likelihoods
 	if args.ancientSamps != None:
-		ancientGLs = np.genfromtxt(args.ancientSamps,delimiter='\t')
+		ancientGLs = np.genfromtxt(args.ancientSamps,delimiter=' ')
 	else:
 		ancientGLs = np.zeros((0,4))
 
@@ -130,10 +135,10 @@ def load_data(args):
 		timeBins = np.array([0.0,tCutoff])
 	return timeBins,times,epochs,Ne,freqs,z_bins,z_logcdf,z_logsf,ancientGLs,noCoals,currFreq,args.dom
 
-def likelihood_wrapper(theta,timeBins,N,freqs,z_bins,z_logcdf,z_logsf,ancGLs,gens,noCoals,currFreq,h):
+def likelihood_wrapper(theta,timeBins,N,freqs,z_bins,z_logcdf,z_logsf,ancGLs,gens,noCoals,currFreq,h,sMax):
     S = theta
     Sprime = np.concatenate((S,[0.0]))
-    if np.any(np.abs(Sprime) > 0.1):
+    if np.any(np.abs(Sprime) > sMax):
         return np.inf
 
     sel = Sprime[np.digitize(epochs,timeBins,right=False)-1]
@@ -169,10 +174,11 @@ def out(args,epochs,freqs,post):
 	np.save(args.out+'.post',post)
 	return
 
-def traj_wrapper(theta,timeBins,N,freqs,z_bins,z_logcdf,z_logsf,ancGLs,gens,noCoals,currFreq,h):
+def traj_wrapper(theta,timeBins,N,freqs,z_bins,z_logcdf,z_logsf,ancGLs,gens,noCoals,currFreq,h,sMax):
     S = theta
     Sprime = np.concatenate((S,[0.0]))
-    if np.any(np.abs(Sprime) > 0.1):
+    if np.any(np.abs(Sprime) > sMax):
+        print('WARNING: selection coefficient exceeds bounds. Maybe change --sMax?')
         return np.inf
 
     sel = Sprime[np.digitize(epochs,timeBins,right=False)-1]
@@ -219,7 +225,12 @@ if __name__ == "__main__":
 	print('Loading data and initializing model...')
 
 	# load data and set up model
+	sMax = args.sMax	
 	timeBins,times,epochs,Ne,freqs,z_bins,z_logcdf,z_logsf,ancientGLs,noCoals,currFreq,h = load_data(args)
+
+	print(Ne)
+	Ne *= 1/2
+	noCoals = int(noCoals)
 
 	# optimize over selection parameters
 	T = len(timeBins)
@@ -241,13 +252,13 @@ if __name__ == "__main__":
 	opts['initial_simplex']=Simplex
 	    
 	#for tup in product(*[[-1,1] for i in range(3)]):
-	logL0 = likelihood_wrapper(S0,timeBins,Ne,freqs,z_bins,z_logcdf,z_logsf,ancientGLs,epochs,noCoals,currFreq,h)
+	logL0 = likelihood_wrapper(S0,timeBins,Ne,freqs,z_bins,z_logcdf,z_logsf,ancientGLs,epochs,noCoals,currFreq,h,sMax)
 
 	print('Optimizing likelihood surface using Nelder-Mead...')
 	if times.shape[2] > 1:
 		print('\t(Importance sampling with M = %d Relate samples)'%(times.shape[2]))
 		print()
-	minargs = (timeBins,Ne,freqs,z_bins,z_logcdf,z_logsf,ancientGLs,epochs,noCoals,currFreq,h)
+	minargs = (timeBins,Ne,freqs,z_bins,z_logcdf,z_logsf,ancientGLs,epochs,noCoals,currFreq,h,sMax)
 	res = minimize(likelihood_wrapper,
 	         S0,
 	         args=minargs,
@@ -269,18 +280,18 @@ if __name__ == "__main__":
 	print('epoch\tselection')
 	for s,t,u in zip(S,timeBins[:-1],timeBins[1:]):
 		print('%d-%d\t%.5f'%(t,u,s))
-	
+
 
 	# infer trajectory @ MLE of selection parameter
-	post = traj_wrapper(res.x,timeBins,Ne,freqs,z_bins,z_logcdf,z_logsf,ancientGLs,epochs,noCoals,currFreq,h)
+	post = traj_wrapper(res.x,timeBins,Ne,freqs,z_bins,z_logcdf,z_logsf,ancientGLs,epochs,noCoals,currFreq,h,sMax)
 	
 	if args.out != None:
 		out(args,epochs,freqs,post)
 	else:
 		print()
-		print('Trajectory for 100 gens before present:')
+		print('Trajectory:')
 		print('=============')
-		print('gen\tfreq')
+		print('gens bp\tfreq')
 		for i in range(0,int(timeBins[-1]),int(timeBins[-1]//20)):
 			print(i,np.sum(freqs * np.exp(post[:,i])))
 		print()
