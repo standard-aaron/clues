@@ -6,6 +6,46 @@ from scipy.special import logsumexp
 import scipy.stats as stats
 from scipy.optimize import minimize
 import argparse
+import gzip
+
+def parse_clues(filename):
+    with gzip.open(filename, 'rb') as fp:
+        try:
+            #parse file
+            data = fp.read()
+        except OSError:
+            with open(filename, 'rb') as fp:
+                try:
+                    #parse file
+                    data = fp.read()
+                except OSError:
+                    print('Error: Unable to open ' + filename)
+                    exit(1)
+
+        #get #mutations and #sampled trees per mutation
+        filepos = 0
+        num_muts, num_sampled_trees_per_mut = np.frombuffer(data[slice(filepos, filepos+8, 1)], dtype = np.int32)
+        #print(num_muts, num_sampled_trees_per_mut)
+
+        filepos += 8
+        #iterate over mutations
+        for m in range(0,num_muts):
+            if m > 0:
+               print("Warning: multiple mutations.")
+            bp, daf, n = np.frombuffer(data[slice(filepos, filepos+12, 1)], dtype = np.int32)
+            filepos   += 12
+            #print("BP: %d, DAF: %d, n: %d" % (bp, daf, n))
+
+            num_anctimes = 4*(n-daf-1)*num_sampled_trees_per_mut
+            anctimes     = np.reshape(np.frombuffer(data[slice(filepos, filepos+num_anctimes, 1)], dtype = np.float32), (num_sampled_trees_per_mut, n-daf-1))
+            filepos     += num_anctimes
+
+
+            num_dertimes = 4*(daf-1)*num_sampled_trees_per_mut
+            dertimes     = np.reshape(np.frombuffer(data[slice(filepos, filepos+num_dertimes, 1)], dtype = np.float32), (num_sampled_trees_per_mut, daf-1))
+            filepos     += num_dertimes
+
+    return dertimes,anctimes
 
 def parse_args():
 	parser = argparse.ArgumentParser()
@@ -41,8 +81,7 @@ def load_normal_tables():
     return z_bins,z_logcdf,z_logsf
 
 def load_times(args):
-	locusDerTimes = np.load('%s.der.npy'%(args.times))[:,:]
-	locusAncTimes = np.load('%s.anc.npy'%(args.times))[:,:]
+	locusDerTimes,locusAncTimes = parse_clues(args.times+'.palm')
 
 	if locusDerTimes.ndim == 0 or locusAncTimes.ndim == 0:
 		raise ValueError
@@ -68,15 +107,14 @@ def load_times(args):
 	m = locusAncTimes.shape[0] + 1
 	ntot = n + m
 	row0 = -1.0 * np.ones((ntot,M))
+
+
 	row0[:locusDerTimes.shape[0],:] = locusDerTimes
 
-	for row in row0:
-		print(row)
-	
 	row1 = -1.0 * np.ones((ntot,M))
+
 	row1[:locusAncTimes.shape[0],:] = locusAncTimes
-	for row in row1:
-		print(row)
+	print(np.max(row0,axis=0))
 	locusTimes = np.array([row0,row1])
 	return locusTimes, n, m
 
@@ -125,7 +163,7 @@ def load_data(args):
 	a=1
 	b=a
 	c = 1/(2*Ne[0])
-	df = 100
+	df = 120
 	freqs = stats.beta.ppf(np.linspace(c,1-c,df),a,b)
 
 	# load time bins (for defining selection epochs)
@@ -228,7 +266,6 @@ if __name__ == "__main__":
 	sMax = args.sMax	
 	timeBins,times,epochs,Ne,freqs,z_bins,z_logcdf,z_logsf,ancientGLs,noCoals,currFreq,h = load_data(args)
 
-	print(Ne)
 	Ne *= 1/2
 	noCoals = int(noCoals)
 
@@ -283,6 +320,8 @@ if __name__ == "__main__":
 
 
 	# infer trajectory @ MLE of selection parameter
+	print(noCoals)
+
 	post = traj_wrapper(res.x,timeBins,Ne,freqs,z_bins,z_logcdf,z_logsf,ancientGLs,epochs,noCoals,currFreq,h,sMax)
 	
 	if args.out != None:
