@@ -18,7 +18,7 @@ If you use this program, please cite:
 
 Please visit the [Wiki pages](https://github.com/35ajstern/clues/wiki/Sampling-&-extracting-coalescence-times) to find tutorials of how to:
 
-  1. [Run `Relate`](https://github.com/35ajstern/clues/wiki/Sampling-&-extracting-coalescence-times#1-running-relate-and-samplebranchlengthssh)
+  1. [Run `Relate`](https://github.com/35ajstern/clues/wiki/Sampling-coalescence-times-with-Relate)
       
   2. [Run `clues` & command-line options (incl. incorporating aDNA samples)](https://github.com/35ajstern/clues/wiki/Command-line-options-for-CLUES)
       
