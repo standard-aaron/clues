@@ -8,7 +8,7 @@ python inference.py --times example/example --out example/out
 
 where 
 
-`example/example.palm` is a binary file containing derived/ancestral coalescence times for the SNP of interest. These are estimated using [Relate v1.1](https://myersgroup.github.io/relate/) [[Speidel, *et al.* Nat. Gen. 2019]](https://www.nature.com/articles/s41588-019-0484-x) and processed using the `extract_coals.py` script. 
+`example/example.timeb` is a binary file containing derived/ancestral coalescence times for the SNP of interest. These are estimated using [Relate v1.1](https://myersgroup.github.io/relate/) [[Speidel, *et al.* Nat. Gen. 2019]](https://www.nature.com/articles/s41588-019-0484-x) and processed using the `extract_coals.py` script. 
 
 If you use this program, please cite:
   
