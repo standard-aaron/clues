@@ -90,7 +90,7 @@ def load_normal_tables():
     return z_bins,z_logcdf,z_logsf
 
 def load_times(args):
-	locusDerTimes,locusAncTimes = parse_clues(args.times+'.palm',args)
+	locusDerTimes,locusAncTimes = parse_clues(args.times+'.timeb',args)
 
 	if locusDerTimes.ndim == 0 or locusAncTimes.ndim == 0:
 		raise ValueError
