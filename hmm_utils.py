@@ -193,9 +193,15 @@ def forward_algorithm(sel,times,epochs,N,freqs,z_bins,z_logcdf,z_logsf,ancientGL
     
     # neutral sfs
     alpha = -np.log(freqs) 
-    
+    binEdges = np.array([0]+[0.5*(freqs[i]+freqs[i+1]) for i in range(len(freqs)-1)]+[1])
+    alpha += np.log(np.diff(binEdges))
+
     # uniform prior
-    alpha = np.zeros(len(freqs))
+    #alpha = np.zeros(len(freqs))
+
+    # initial freq = min
+    #alpha = np.ones(len(freqs))*-np.inf
+    #alpha[0] = 0
 	
     alpha -= _logsumexp(alpha)
     
@@ -218,6 +224,7 @@ def forward_algorithm(sel,times,epochs,N,freqs,z_bins,z_logcdf,z_logsf,ancientGL
     coalEmissions = np.zeros(lf)
     N0 = N[0]
     for tb in range(T-1,0,-1):
+        #print('F',tb,alpha[::24])
         dt = -epochs[tb]+epochs[tb+1]
         epoch = np.array([cumGens - dt,cumGens])
         Nt = N[tb]
@@ -286,13 +293,11 @@ def backward_algorithm(sel,times,epochs,N,freqs,z_bins,z_logcdf,z_logsf,ancientG
     
     lf = len(freqs)
     alpha = np.zeros(lf)
-    
     if currFreq != -1:
         nsamp = 1000
         for i in range(lf):
             k = int(currFreq*nsamp)
-            alpha[i] = -np.sum(np.log(np.arange(2,k+1)))
-            alpha[i] += np.sum(np.log(np.arange(2,nsamp-k+1)))
+            alpha[i] = -np.sum(np.log(np.arange(2,k+1)))-np.sum(np.log(np.arange(2,nsamp-k+1)))+np.sum(np.log(np.arange(2,nsamp+1)))
             alpha[i] += k*np.log(freqs[i]) + (nsamp-k)*np.log(1-freqs[i])
             
     T = len(epochs)-1
@@ -314,6 +319,7 @@ def backward_algorithm(sel,times,epochs,N,freqs,z_bins,z_logcdf,z_logsf,ancientG
     N0 = N[0]
     coalEmissions = np.zeros(lf)
     for tb in range(0,T):
+        #print('B',tb,alpha[::24])
         dt = epochs[tb+1]-epochs[tb]
         Nt = N[tb]
         epoch = np.array([cumGens,cumGens+dt])

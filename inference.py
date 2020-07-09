@@ -79,6 +79,8 @@ def parse_args():
 	parser.add_argument('--tCutoff',type=float,default=1000)
 	parser.add_argument('--timeBins',type=str,default=None)
 	parser.add_argument('--sMax',type=float,default=0.1)
+	parser.add_argument('--tSkip',type=int,default=1)
+	parser.add_argument('--df',type=int,default=120)
 	return parser.parse_args()
 
 
@@ -155,7 +157,7 @@ def load_data(args):
 	else:
 		tCutoff = args.tCutoff
 
-	epochs = np.arange(0.0,tCutoff)
+	epochs = np.arange(0.0,tCutoff,int(args.tSkip))
 	# loading population size trajectory
 	if args.coal != None:
 		Nepochs = np.genfromtxt(args.coal,skip_header=1,skip_footer=1)
@@ -169,12 +171,11 @@ def load_data(args):
 	z_bins,z_logcdf,z_logsf = load_normal_tables()
 
 	# set up freq bins
-	a=1
+	a=0.5
 	b=a
-	c = 1/(2*Ne[0])
-	df = 120
+	c = 1/(2*np.min([Ne[0],100000]))
+	df = 180
 	freqs = stats.beta.ppf(np.linspace(c,1-c,df),a,b)
-
 	# load time bins (for defining selection epochs)
 	if args.timeBins != None:
 		timeBins = np.genfromtxt(args.timeBins)
@@ -339,9 +340,9 @@ if __name__ == "__main__":
 		print()
 		print('Trajectory:')
 		print('=============')
-		print('gens bp\tfreq')
-		for i in range(0,int(timeBins[-1]),int(timeBins[-1]//20)):
-			print(i,np.sum(freqs * np.exp(post[:,i])))
+		print('gens_bp\tfreq')
+		for i in range(0,int(timeBins[-1]/args.tSkip),int(timeBins[-1]//(20*args.tSkip))):
+			print(i*args.tSkip,np.sum(freqs * np.exp(post[:,i])))
 		print()
 		print('Finished.')
 		print()
