@@ -149,6 +149,14 @@ def _nstep_log_trans_prob(N,s,FREQS,z_bins,z_logcdf,z_logsf,dt,h):
 	return pn
 
 @njit('float64(float64[:],float64)')
+def _hap_genotype_likelihood_emission(ancGLs,p):
+    logGenoFreqs = np.array([np.log(1-p),np.log(p)])
+    emission = _logsumexp(logGenoFreqs + ancGLs)
+    if np.isnan(emission):
+        emission = -np.inf
+    return emission
+
+@njit('float64(float64[:],float64)')
 def _genotype_likelihood_emission(ancGLs,p):
 	logGenoFreqs = np.array([2*np.log(1-p),np.log(2) + np.log(p) + np.log(1-p),2*np.log(p)])
 	emission = _logsumexp(logGenoFreqs + ancGLs)
@@ -182,8 +190,8 @@ def _log_coal_density(times,n,epoch,xi,Ni,N0,anc=0):
     logp += logPk
     return logp
 
-@njit('float64[:,:](float64[:],float64[:,:],float64[:],float64[:],float64[:],float64[:],float64[:],float64[:],float64[:,:],int64,float64)',cache=True)
-def forward_algorithm(sel,times,epochs,N,freqs,z_bins,z_logcdf,z_logsf,ancientGLs,noCoals=1,h=0.5):
+@njit('float64[:,:](float64[:],float64[:,:],float64[:],float64[:],float64[:],float64[:],float64[:],float64[:],float64[:,:],float64[:,:],float64[:],int64,float64)',cache=True)
+def forward_algorithm(sel,times,epochs,N,freqs,z_bins,z_logcdf,z_logsf,ancientGLs,ancientHapGLs,changePts,noCoals=1,h=0.5):
 
     '''
     Moves forward in time from past to present
@@ -223,6 +231,8 @@ def forward_algorithm(sel,times,epochs,N,freqs,z_bins,z_logcdf,z_logsf,ancientGL
     nAncRemaining = nAnc - np.sum(np.logical_and(times[1,:]>=0, times[1,:]<=epochs[-1]))
     coalEmissions = np.zeros(lf)
     N0 = N[0]
+
+    cpTrans = np.ones((lf,lf))*1/lf
     for tb in range(T-1,0,-1):
         #print('F',tb,alpha[::24])
         dt = -epochs[tb]+epochs[tb+1]
@@ -232,19 +242,26 @@ def forward_algorithm(sel,times,epochs,N,freqs,z_bins,z_logcdf,z_logsf,ancientGL
         st = sel[tb]
         prevAlpha = np.copy(alpha)
         
-        if prevNt != Nt or prevst != st or prevdt != dt:
-            #print(Nt,st,dt)
+        if np.sum(tb==changePts) != 0:
+            #changePts
+            currTrans = cpTrans
+
+        elif prevNt != Nt or prevst != st or prevdt != dt or np.sum(tb+1==changePts) != 0:
+            #change in selection/popsize, recalc trans prob
             currTrans = _nstep_log_trans_prob(Nt,st,freqs,z_bins,z_logcdf,z_logsf,dt,h)
         
         #grab ancient GL rows
         ancientGLrows = ancientGLs[np.logical_and(ancientGLs[:,0] <= cumGens, ancientGLs[:,0] > cumGens - dt)]
-        
+        ancientHapGLrows = ancientHapGLs[np.logical_and(ancientHapGLs[:,0] <= cumGens, ancientHapGLs[:,0] > cumGens - dt)]
+
         # calculate ancient GL emission probs
         glEmissions = np.zeros(lf)
         
         for j in range(lf):
             for iac in range(ancientGLrows.shape[0]):
                 glEmissions[j] += _genotype_likelihood_emission(ancientGLrows[iac,1:],freqs[j])
+            for iac in range(ancientHapGLrows.shape[0]):
+                glEmissions[j] += _hap_genotype_likelihood_emission(ancientHapGLrows[iac,1:],freqs[j])
                 
         # calculate coal emission probs
         
@@ -284,8 +301,8 @@ def forward_algorithm(sel,times,epochs,N,freqs,z_bins,z_logcdf,z_logsf,ancientGL
         alphaMat[tb,:] = alpha
     return alphaMat
     
-@njit('float64[:,:](float64[:],float64[:,:],float64[:],float64[:],float64[:],float64[:],float64[:],float64[:],float64[:,:],int64,float64,float64)',cache=True)
-def backward_algorithm(sel,times,epochs,N,freqs,z_bins,z_logcdf,z_logsf,ancientGLs,noCoals=1,currFreq=-1,h=0.5):
+@njit('float64[:,:](float64[:],float64[:,:],float64[:],float64[:],float64[:],float64[:],float64[:],float64[:],float64[:,:],float64[:,:],float64[:],int64,float64,float64)',cache=True)
+def backward_algorithm(sel,times,epochs,N,freqs,z_bins,z_logcdf,z_logsf,ancientGLs,ancientHapGLs,changePts,noCoals=1,currFreq=-1,h=0.5):
 
     '''
     Moves backward in time from present to past
@@ -318,6 +335,8 @@ def backward_algorithm(sel,times,epochs,N,freqs,z_bins,z_logcdf,z_logsf,ancientG
     nAncRemaining = nAnc
     N0 = N[0]
     coalEmissions = np.zeros(lf)
+    cpTrans = np.ones((lf,lf))*1/lf
+
     for tb in range(0,T):
         #print('B',tb,alpha[::24])
         dt = epochs[tb+1]-epochs[tb]
@@ -325,8 +344,11 @@ def backward_algorithm(sel,times,epochs,N,freqs,z_bins,z_logcdf,z_logsf,ancientG
         epoch = np.array([cumGens,cumGens+dt])
         st = sel[tb]
         prevAlpha = np.copy(alpha)
+
+        if np.sum(tb==changePts) != 0:
+            currTrans = cpTrans
         
-        if prevNt != Nt or prevst != st or prevdt != dt:
+        elif prevNt != Nt or prevst != st or prevdt != dt or np.sum(tb-1==changePts) != 0:
             #print(Nt,st,dt)
             currTrans = _nstep_log_trans_prob(Nt,st,freqs,z_bins,z_logcdf,z_logsf,dt,h)
         
@@ -334,10 +356,15 @@ def backward_algorithm(sel,times,epochs,N,freqs,z_bins,z_logcdf,z_logsf,ancientG
         ancientGLrows = ancientGLs[ancientGLs[:,0] > cumGens]
         ancientGLrows = ancientGLrows[ancientGLrows[:,0] <= cumGens + dt]
 
+        ancientHapGLrows = ancientHapGLs[ancientHapGLs[:,0] > cumGens]
+        ancientHapGLrows = ancientHapGLrows[ancientHapGLrows[:,0] <= cumGens + dt]
+
         glEmissions = np.zeros(lf)
         for j in range(lf):
             for iac in range(ancientGLrows.shape[0]):
                 glEmissions[j] += _genotype_likelihood_emission(ancientGLrows[iac,1:],freqs[j])
+            for iac in range(ancientHapGLrows.shape[0]):
+                glEmissions[j] += _hap_genotype_likelihood_emission(ancientHapGLrows[iac,1:],freqs[j])
         
         #grab coal times during epoch
         # calculate coal emission probs
