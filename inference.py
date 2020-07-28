@@ -38,16 +38,22 @@ def parse_clues(filename,args):
             filepos += 8
             #print("BP: %d, anc: %s, der %s, DAF: %d, n: %d" % (bp, str(anc), str(der), daf, n))
             
-            num_anctimes = 4*(n-daf-1)*num_sampled_trees_per_mut
-            anctimes     = np.reshape(np.frombuffer(data[slice(filepos, filepos+num_anctimes, 1)], dtype = np.float32), (num_sampled_trees_per_mut, n-daf-1))
-            filepos     += num_anctimes
-            #print(anctimes)
             
-            num_dertimes = 4*(daf-1)*num_sampled_trees_per_mut
-            dertimes     = np.reshape(np.frombuffer(data[slice(filepos, filepos+num_dertimes, 1)], dtype = np.float32), (num_sampled_trees_per_mut, daf-1))
-            filepos     += num_dertimes
+            if daf >= n-1:
+            	anctimes = np.empty((num_sampled_trees_per_mut,0))
+            else:
+                num_anctimes = 4*(n-daf-1)*num_sampled_trees_per_mut
+                anctimes     = np.reshape(np.frombuffer(data[slice(filepos, filepos+num_anctimes, 1)], dtype = np.float32), (num_sampled_trees_per_mut, n-daf-1))
+                filepos     += num_anctimes
             
-            if (args.A1 is not None) and (args.A1 != der):
+            if daf <= 1:
+            	dertimes = np.empty((num_sampled_trees_per_mut,0))
+            else:
+                num_dertimes = 4*(daf-1)*num_sampled_trees_per_mut
+                dertimes     = np.reshape(np.frombuffer(data[slice(filepos, filepos+num_dertimes, 1)], dtype = np.float32), (num_sampled_trees_per_mut, daf-1))
+                filepos     += num_dertimes
+            
+            if (args.A1 is not None) and (args.A1 != der.decode('ascii')):
                 tmp = np.copy(dertimes)
                 dertimes = np.copy(anctimes)
                 anctimes = tmp 
@@ -96,11 +102,11 @@ def load_normal_tables():
 
 def load_times(args):
 	locusDerTimes,locusAncTimes = parse_clues(args.times+'.timeb',args)
-
+	print(locusDerTimes.shape,locusAncTimes.shape)	
 	if locusDerTimes.ndim == 0 or locusAncTimes.ndim == 0:
 		raise ValueError
-	if np.prod(locusDerTimes.shape) == 0 or np.prod(locusAncTimes.shape) == 0:
-		raise ValueError	
+	#if np.prod(locusDerTimes.shape) == 0 or np.prod(locusAncTimes.shape) == 0:
+	#	raise ValueError
 	elif locusAncTimes.ndim == 1 and locusDerTimes.ndim == 1:
 		M = 1
 		locusDerTimes = np.transpose(np.array([locusDerTimes]))
@@ -128,7 +134,6 @@ def load_times(args):
 	row1 = -1.0 * np.ones((ntot,M))
 
 	row1[:locusAncTimes.shape[0],:] = locusAncTimes
-	print(np.max(row0,axis=0))
 	locusTimes = np.array([row0,row1])
 	return locusTimes, n, m
 
