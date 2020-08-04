@@ -167,7 +167,10 @@ def load_data(args):
 		ancientHapGLs = np.zeros((0,3))
 
 	if noCoals:
-		tCutoff = np.max(ancientGLs[:,0])+1.0
+		try:
+			tCutoff = np.max(ancientGLs[:,0])+1.0
+		except:
+			tCutoff = np.max(ancientHapGLs[:,0])+1.0
 	else:
 		tCutoff = args.tCutoff
 
@@ -287,8 +290,8 @@ def traj_wrapper(theta,timeBins,N,freqs,z_bins,z_logcdf,z_logsf,ancGLs,ancHapGLs
 
 if __name__ == "__main__":
 	args = parse_args()
-	if args.times == None and args.ancientSamps == None:
-		print('You need to supply coalescence times (--times) and/or ancient samples (--ancientSamps)')
+	if args.times == None and args.ancientSamps == None and args.ancientHaps == None:
+		print('You need to supply coalescence times (--times) and/or ancient samples (--ancientSamps) and/or ancient haploid samples (--ancientHaps)')
 	
 	print()
 	print('Loading data and initializing model...')
