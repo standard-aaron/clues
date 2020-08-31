@@ -16,7 +16,7 @@ f,ax = plt.subplots(1,1)
 f.set_size_inches(20,10)
 
 plt.pcolormesh(epochs[:-1],freqs,np.exp(logpost)[:,:])
-plt.axis((0,800,0,1.0))
+plt.axis((0,len(epochs[:-1]),0,1.0))
 plt.ylabel('Allele frequency',fontsize=20)
 plt.xlabel('Generations before present',fontsize=20)
 plt.xticks(fontsize=18)
