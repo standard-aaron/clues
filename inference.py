@@ -350,7 +350,7 @@ if __name__ == "__main__":
 	print('========')
 	print('epoch\tselection')
 	for s,t,u in zip(S,timeBins[:-1],timeBins[1:]):
-		print('%d-%d\t%.5f'%(t,u,s))
+		print('%d-%d\t%.7f'%(t,u,s))
 
 
 	# infer trajectory @ MLE of selection parameter
