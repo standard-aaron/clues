@@ -359,8 +359,9 @@ if __name__ == "__main__":
 		Lvec = np.array(Lvec)
 		S = np.array([Svec[np.argmax(-Lvec)]])
 		L = np.max(-Lvec)
-		p = np.polyfit(Svec,Lvec,deg=2)
+		p = np.polyfit(Svec,-Lvec,deg=2)
 		if args.out != None:
+			print(p)
 			np.save(args.out+'.quad_fit.npy',p)
 
 
