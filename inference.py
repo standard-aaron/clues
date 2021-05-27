@@ -89,7 +89,7 @@ def parse_args():
 	parser.add_argument('--sMax',type=float,default=0.1)
 	parser.add_argument('--tSkip',type=int,default=1)
 	parser.add_argument('--df',type=int,default=150)
-	parser.add_argument('--betaParam',type=float,default=0.5)
+	parser.add_argument('--betaParam',type=float,default=1.0)
 	return parser.parse_args()
 
 
