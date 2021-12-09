@@ -28,7 +28,7 @@ Please visit the [Wiki pages](https://github.com/35ajstern/clues/wiki/Sampling-&
 
 `clues` has developed for python 3; use python 2 at your own risk (visit the Issues section for tips on using python 2).
 
-The programs require the following dependencies, which can be installed using conda/pip: `numba`, `progressbar`, `biopython`
+The programs require the following dependencies, which can be installed using conda/pip: `numba`, `progressbar`, `biopython`, `scipy`, `matplotlib`
 
 #### Previous implementation (`clues-v0`)
 
