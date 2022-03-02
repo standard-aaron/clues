@@ -90,6 +90,8 @@ def parse_args():
 	parser.add_argument('--tSkip',type=int,default=1)
 	parser.add_argument('--df',type=int,default=150)
 	parser.add_argument('--betaParam',type=float,default=1.0)
+	parser.add_argument('--lik',action='store_true',help='saves likelihood function, used by PALM. **Only compatible when a single selection coefficient is estimated.**')
+	parser.add_argument('--w',type=float,default=0.01,help='width used to estimate likelihood function (--lik)')
 	return parser.parse_args()
 
 
