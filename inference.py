@@ -353,7 +353,7 @@ if __name__ == "__main__":
 	if args.lik:
 		print('Fitting likelihood function...')
 		print()
-		Svec = np.linspace(S[0]-args.w,min(S[0]+args.w,sMax),20)
+		Svec = np.linspace(max(S[0]-args.w,-sMax),min(S[0]+args.w,sMax),20)
 		Lvec = []
 		for s in Svec:
 			l = likelihood_wrapper(np.array([s]),timeBins,Ne,freqs,z_bins,z_logcdf,z_logsf,ancientGLs,ancientHapGLs,epochs,noCoals,currFreq,h,sMax,changePts)
