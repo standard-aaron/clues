@@ -97,10 +97,12 @@ def parse_args():
 
 
 def load_normal_tables():
+    import os
+    dname = os.path.dirname(os.path.abspath(__file__))
     # read in global Phi(z) lookups
-    z_bins = np.genfromtxt('utils/z_bins.txt')
-    z_logcdf = np.genfromtxt('utils/z_logcdf.txt')
-    z_logsf = np.genfromtxt('utils/z_logsf.txt')
+    z_bins = np.genfromtxt(os.path.join(dname, 'utils/z_bins.txt'))
+    z_logcdf = np.genfromtxt(os.path.join(dname, 'utils/z_logcdf.txt'))
+    z_logsf = np.genfromtxt(os.path.join(dname, 'utils/z_logsf.txt'))
     return z_bins,z_logcdf,z_logsf
 
 def load_times(args):
